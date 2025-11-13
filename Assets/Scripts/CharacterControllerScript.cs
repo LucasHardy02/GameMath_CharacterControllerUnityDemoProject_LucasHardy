@@ -1,36 +1,44 @@
 using System;
+using Unity.Hierarchy;
 using UnityEngine;
 
 public class CharacterControllerScript : MonoBehaviour
 {
-
-    public int speed;
+    public float playerSpeed;
+    public int hop;
 
     private Rigidbody rb;
+    private bool isGrounded = false;
+    public GameObject player;
+    public GameObject Camera;
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        playerSpeed = 0.05f;
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
-        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-        if(keyInfo.Key == ConsoleKey.W)
+        
+        if(Input.GetKey(KeyCode.W))
         {
-            transform.Translate(Vector3.forward * speed);
+            player.transform.Translate(Vector3.forward * playerSpeed);
         }
-        if (keyInfo.Key == ConsoleKey.A)
+        if (Input.GetKey(KeyCode.A))
         {
-            transform.Translate(Vector3.left * speed);
+            player.transform.Translate(Vector3.left * playerSpeed);
         }
-        if (keyInfo.Key == ConsoleKey.D)
+        if (Input.GetKey(KeyCode.D))
         {
-            transform.Translate(Vector3.right * speed);
+            player.transform.Translate(Vector3.right * playerSpeed);
         }
-        if (keyInfo.Key == ConsoleKey.S)
+        if (Input.GetKey(KeyCode.S))
         {
-            transform.Translate(Vector3.back * speed);
+            player.transform.Translate(Vector3.back * playerSpeed);
+        }
+        if (isGrounded == true || Input.GetKey(KeyCode.Space))
+        {
+            player.transform.Translate(Vector3.up * hop);
+
         }
 
     }

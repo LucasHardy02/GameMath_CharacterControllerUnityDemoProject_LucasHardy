@@ -577,8 +577,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
-  basespeed: 0
+  basespeed: 1
   maxSpeed: 6
+  maxSprintSpeed: 9
   acceleration: 10
   deceleration: 10
   hop: 3

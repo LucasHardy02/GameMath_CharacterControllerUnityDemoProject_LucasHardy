@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Unity.Hierarchy;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -6,8 +7,9 @@ using UnityEngine;
 public class CharacterControllerScript : MonoBehaviour
 {
     public float speed;
-    public float basespeed = 0f;
+    public float basespeed = 1f;
     public float maxSpeed = 6f;
+    public float maxSprintSpeed = 11f;
     public float acceleration = 10f;
     public float deceleration = 10f;
     public float hop = 3;
@@ -16,6 +18,8 @@ public class CharacterControllerScript : MonoBehaviour
     private CharacterController controller;
     private bool isGrounded = false;
     private Vector3 velocity;
+    private Vector3 direction;
+    private Vector3 lastDirection;
     
     
     void Start()
@@ -23,14 +27,14 @@ public class CharacterControllerScript : MonoBehaviour
         controller = GetComponent<CharacterController>();
         speed = 0f;
         maxSpeed = 6f;
+
+
     }
 
     void Update()
     {
-        
 
-        Vector3 direction = Vector3.zero;
-
+        direction = Vector3.zero;
 
         isGrounded = controller.isGrounded;
 
@@ -42,7 +46,6 @@ public class CharacterControllerScript : MonoBehaviour
         if (Input.GetKey(KeyCode.W))
         {
             direction += Vector3.forward;
-
         }
         if (Input.GetKey(KeyCode.A))
         {
@@ -57,6 +60,8 @@ public class CharacterControllerScript : MonoBehaviour
             direction += Vector3.back;
 
         }
+        
+
         if (isGrounded == true && Input.GetKeyDown(KeyCode.Space))
         {
             velocity.y = hop;
@@ -68,29 +73,47 @@ public class CharacterControllerScript : MonoBehaviour
 
         }
 
+        
+
         direction = direction.normalized;
 
         bool isMoving = direction.magnitude > 0.1f;
 
         if (isMoving)
         {
+            lastDirection = direction;
+
+        }
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            speed = Mathf.MoveTowards(speed, maxSprintSpeed, acceleration * Time.deltaTime);
+
+        }
+        else if (isMoving)
+        {
             speed = Mathf.MoveTowards(speed, maxSpeed, acceleration * Time.deltaTime);
 
         }
+        
         else
         {
             speed = Mathf.MoveTowards(speed, 0, deceleration * Time.deltaTime);
-
         }
 
+        
 
-        Vector3 movement = direction * speed * Time.deltaTime;
+
+        Vector3 movement = lastDirection * speed * Time.deltaTime;
+
 
         controller.Move(movement);
         controller.Move(velocity * Time.deltaTime);
 
-       
+        Debug.Log(movement);
 
+       
+       
 
     }
   

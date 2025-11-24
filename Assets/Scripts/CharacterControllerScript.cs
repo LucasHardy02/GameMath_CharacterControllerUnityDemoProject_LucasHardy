@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Unity.Hierarchy;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class CharacterControllerScript : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class CharacterControllerScript : MonoBehaviour
     public float deceleration = 10f;
     public float hop = 3;
     public float gravity = -9.81f;
+
+    public Transform camera;
 
     private CharacterController controller;
     private bool isGrounded = false;
@@ -28,39 +31,56 @@ public class CharacterControllerScript : MonoBehaviour
         speed = 0f;
         maxSpeed = 6f;
 
+        camera = camera.transform;
+
 
     }
 
     void Update()
     {
 
+        // Character Rotation
+
+        Vector3 mousePos = Input.mousePosition;
+
+        float yPos = Mathf.Clamp(mousePos.y, -89, 89);
+
+        transform.rotation = Quaternion.Euler(-yPos, mousePos.x, 0);
+
+        // WASD Movement
+
         direction = Vector3.zero;
+
+        Vector3 localForward = camera.forward;
+        Vector3 localLeft = -camera.right;
+        Vector3 localRight = camera.right;
+        Vector3 localBack = -camera.forward;
 
         isGrounded = controller.isGrounded;
 
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -1f; 
+            velocity.y = -1f;
         }
 
         if (Input.GetKey(KeyCode.W))
         {
-            direction += Vector3.forward;
+            direction += localForward;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            direction += Vector3.left;
+            direction += localLeft;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            direction += Vector3.right;
+            direction += localRight;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            direction += Vector3.back;
+            direction += localBack;
 
         }
-        
+
 
         if (isGrounded == true && Input.GetKeyDown(KeyCode.Space))
         {
@@ -73,7 +93,7 @@ public class CharacterControllerScript : MonoBehaviour
 
         }
 
-        
+
 
         direction = direction.normalized;
 
@@ -95,13 +115,13 @@ public class CharacterControllerScript : MonoBehaviour
             speed = Mathf.MoveTowards(speed, maxSpeed, acceleration * Time.deltaTime);
 
         }
-        
+
         else
         {
             speed = Mathf.MoveTowards(speed, 0, deceleration * Time.deltaTime);
         }
 
-        
+
 
 
         Vector3 movement = lastDirection * speed * Time.deltaTime;
@@ -112,9 +132,5 @@ public class CharacterControllerScript : MonoBehaviour
 
         Debug.Log(movement);
 
-       
-       
-
     }
-  
 }

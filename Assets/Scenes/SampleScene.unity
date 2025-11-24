@@ -581,9 +581,10 @@ MonoBehaviour:
   maxSpeed: 6
   maxSprintSpeed: 9
   acceleration: 10
-  deceleration: 10
+  deceleration: 25
   hop: 3
   gravity: -9.81
+  camera: {fileID: 330585546}
 --- !u!1 &1359035134
 GameObject:
   m_ObjectHideFlags: 0

@@ -59,9 +59,20 @@ public class CharacterControllerScript : MonoBehaviour
         direction = Vector3.zero;
 
         Vector3 localForward = camera.forward;
+        localForward.y = 0;
+        localForward.Normalize();
+
         Vector3 localLeft = -camera.right;
+        localLeft.y = 0;
+        localLeft.Normalize();
+
         Vector3 localRight = camera.right;
+        localRight.y = 0;
+        localRight.Normalize();
+
         Vector3 localBack = -camera.forward;
+        localBack.y = 0;
+        localBack.Normalize();
 
         isGrounded = controller.isGrounded;
 

@@ -2,6 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Unity.Hierarchy;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
@@ -29,15 +30,45 @@ public class CharacterControllerScript : MonoBehaviour
     private Vector3 lastDirection;
     private bool Sprinting = false;
     private bool Crouching = false;
-    
+
+    private float standingHeight;
+    private Vector3 standingCenter;
+
+    private float heightDifference;
+
+    private float cameraStartY;
+    private float cameraCrouchY;
+
+    private float crouchHeight;
+    private Vector3 crouchCenter;
+
+    private float targetCamY;
     
     void Start()
     {
+
         controller = GetComponent<CharacterController>();
+
+        standingHeight = controller.height;
+        standingCenter = controller.center;
+
+        crouchHeight = standingHeight * 0.6f;
+        heightDifference = standingHeight - crouchHeight;
+        crouchCenter = standingCenter - new Vector3(0, (heightDifference) / 2f, 0);
+
+        cameraStartY = camera.localPosition.y;
+        cameraCrouchY = cameraStartY - heightDifference / 2;
+
         speed = 0f;
         maxSpeed = 6f;
 
-        camera = camera.transform;
+        
+
+
+
+        
+
+        
 
 
     }
@@ -155,30 +186,43 @@ public class CharacterControllerScript : MonoBehaviour
         if (Crouching)
         {
             speed = Mathf.MoveTowards(speed, maxCrouchSpeed, acceleration * Time.deltaTime);
+            targetCamY = cameraCrouchY;
+
+            
+
         }
         else if (Sprinting)
         {
             speed = Mathf.MoveTowards(speed, maxSprintSpeed, acceleration * Time.deltaTime);
+            targetCamY = cameraStartY;
+
         }
         else if (isMoving)
         {
             speed = Mathf.MoveTowards(speed, maxSpeed, acceleration * Time.deltaTime);
+            targetCamY = cameraStartY;
 
         }
         else
         {
             speed = Mathf.MoveTowards(speed, 0, deceleration * Time.deltaTime);
-
+            targetCamY = cameraStartY;
         }
 
+        
 
-        Vector3 movement = lastDirection * speed * Time.deltaTime;
+        Vector3 cameraPos = camera.localPosition;
+        cameraPos.y = Mathf.Lerp(cameraPos.y, targetCamY, Time.deltaTime * 10f);
+        camera.localPosition = cameraPos;
+
+        Vector3 movement = direction * speed * Time.deltaTime;
 
 
         controller.Move(movement);
         controller.Move(velocity * Time.deltaTime);
 
         Debug.Log(movement);
+        
 
     }
 }

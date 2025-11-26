@@ -1,8 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using Unity.Hierarchy;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
